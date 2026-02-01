@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Ti ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            font-family: 'Quicksand', sans-serif;
+            overflow: hidden;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 350px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Espacio para la foto */
+        .photo-container {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 5px solid #ff7eb3;
+            box-shadow: 0 5px 15px rgba(255, 126, 179, 0.4);
+        }
+
+        .photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        h1 {
+            font-family: 'Pacifico', cursive;
+            color: #ff477e;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .btn {
+            background: #ff477e;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            background: #ff2e63;
+        }
+
+        /* Animación suave de flotación */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="photo-container">
+            <img src="https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="Nosotros">
+        </div>
+        
+        <h1>Hola, mi vida ❤️</h1>
+        
+        <p>
+            Hice esta pequeña página solo para recordarte lo mucho que me importas.
+            ¿Estás lista para una sorpresa?
+        </p>
+
+        <button class="btn" onclick="lanzarAmor()">¡Presióname!</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        function lanzarAmor() {
+            // Lanza confeti en forma de corazones
+            var defaults = {
+                spread: 360,
+                ticks: 100,
+                gravity: 0,
+                decay: 0.94,
+                startVelocity: 30,
+                shapes: ['heart'],
+                colors: ['#FFC0CB', '#FF69B4', '#FF1493', '#C71585']
+            };
+
+            confetti({
+                ...defaults,
+                particleCount: 50,
+                scalar: 2
+            });
+
+            confetti({
+                ...defaults,
+                particleCount: 25,
+                scalar: 3
+            });
+            
+            confetti({
+                ...defaults,
+                particleCount: 10,
+                scalar: 4
+            });
+        }
+    </script>
+</body>
+</html>
