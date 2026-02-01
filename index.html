@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para Ti 💜</title>
+    <title>Para mi Sofi 💜</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --duracion: 0.8s; /* Velocidad de la hoja */
+            --duracion: 0.8s;
         }
 
         body {
@@ -24,22 +24,87 @@
             overflow: hidden;
         }
 
-        /* El contenedor del libro */
+        /* --- PANTALLA DE INICIO (OVERLAY) --- */
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            transition: opacity 1s ease;
+        }
+
+        #overlay h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .btn-start {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            color: #d63384;
+            font-weight: bold;
+            box-shadow: 0 0 20px rgba(255, 154, 158, 0.6);
+            animation: pulseBtn 2s infinite;
+        }
+
+        @keyframes pulseBtn {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* --- VIDEO OCULTO --- */
+        #video-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 1px;
+            height: 1px;
+            opacity: 0.01;
+            z-index: -100;
+            pointer-events: none;
+        }
+
+        /* --- EL LIBRO --- */
         .book {
             width: 350px;
             height: 500px;
             position: relative;
-            perspective: 1500px; /* Profundidad 3D */
+            perspective: 1500px;
+            opacity: 0;
+            transition: opacity 2s ease;
         }
 
-        /* Cada página */
+        .book.visible {
+            opacity: 1;
+        }
+
         .paper {
             width: 100%;
             height: 100%;
             position: absolute;
             top: 0;
             left: 0;
-            transform-origin: left center; /* Gira desde el lomo */
+            transform-origin: left center;
             transition: transform var(--duracion) ease-in-out;
             cursor: pointer;
             border-radius: 5px 15px 15px 5px;
@@ -52,243 +117,168 @@
             padding: 20px;
             box-sizing: border-box;
             text-align: center;
-            backface-visibility: hidden; /* Oculta el reverso al girar */
+            backface-visibility: hidden;
         }
 
-        /* Estilos de Texto */
-        h2 {
-            font-family: 'Dancing Script', cursive;
-            font-size: 2rem;
-            margin-bottom: 15px;
-            color: #fff;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        }
+        h2 { font-family: 'Dancing Script', cursive; font-size: 2rem; margin-bottom: 15px; color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+        .poema { font-size: 1rem; line-height: 1.6; color: #fff; margin-bottom: 30px; font-weight: 600; }
+        .frase-apoyo { background: rgba(255, 255, 255, 0.25); padding: 10px 15px; border-radius: 15px; font-size: 0.9rem; color: #fff; font-weight: bold; border: 1px dashed rgba(255,255,255,0.5); }
+        .decoracion { font-size: 2rem; margin-bottom: 10px; opacity: 0.8; }
+        .click-hint { position: absolute; bottom: 10px; font-size: 0.7rem; color: rgba(255,255,255,0.6); animation: pulse 2s infinite; }
 
-        .poema {
-            font-size: 1rem;
-            line-height: 1.6;
-            color: #fff;
-            margin-bottom: 30px;
-            font-weight: 600;
-        }
-
-        .frase-apoyo {
-            background: rgba(255, 255, 255, 0.25);
-            padding: 10px 15px;
-            border-radius: 15px;
-            font-size: 0.9rem;
-            color: #fff;
-            font-weight: bold;
-            border: 1px dashed rgba(255,255,255,0.5);
-        }
-
-        .decoracion {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            opacity: 0.8;
-        }
-
-        .click-hint {
-            position: absolute;
-            bottom: 10px;
-            font-size: 0.7rem;
-            color: rgba(255,255,255,0.6);
-            animation: pulse 2s infinite;
-        }
-
-        /* Colores y Temas de las 10 Páginas (Candy Colors) */
-        
-        /* Página 1 */
+        /* Colores de Páginas */
         #p1 { z-index: 10; background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%); }
-        /* Página 2 */
         #p2 { z-index: 9; background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%); }
-        /* Página 3 */
         #p3 { z-index: 8; background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%); }
-        /* Página 4 */
         #p4 { z-index: 7; background: linear-gradient(to top, #9795f0 0%, #fbc8d4 100%); }
-        /* Página 5 */
         #p5 { z-index: 6; background: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%); }
-        /* Página 6 */
         #p6 { z-index: 5; background: linear-gradient(to top, #fbc2eb 0%, #a6c1ee 100%); }
-        /* Página 7 */
         #p7 { z-index: 4; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        /* Página 8 */
         #p8 { z-index: 3; background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); color: #555 !important; }
-        /* Página 9 */
         #p9 { z-index: 2; background: linear-gradient(to right, #ff8177 0%, #ff867a 0%, #ff8c7f 21%, #f99185 52%, #cf556c 78%, #b12a5b 100%); }
-        /* Página 10 */
         #p10 { z-index: 1; background: linear-gradient(to top, #30cfd0 0%, #330867 100%); }
 
-        /* Ajustes de color de texto para fondos oscuros/claros */
         #p8 h2, #p8 .poema, #p8 .frase-apoyo { color: #d63384; border-color: #d63384; }
-
-        /* Clase para girar la página */
-        .flipped {
-            transform: rotateY(-180deg);
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        /* Responsive para móviles pequeños */
-        @media (max-width: 400px) {
-            .book { width: 90vw; height: 80vh; }
-        }
+        .flipped { transform: rotateY(-180deg); }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        @media (max-width: 400px) { .book { width: 90vw; height: 80vh; } }
     </style>
 </head>
 <body>
 
+    <div id="overlay">
+        <h1>Para mi Sofi ❤️</h1>
+        <p style="margin-bottom: 30px;">Tengo algo especial que decirte...</p>
+        <button class="btn-start" onclick="startExperience()">Abrir Regalo</button>
+    </div>
+
+    <div id="video-container">
+        <div id="player"></div>
+    </div>
+
     <div class="book" id="book">
-        
         <div class="paper" id="p1" onclick="flip(1)">
             <div class="decoracion">💌</div>
             <h2>Para mi persona favorita</h2>
-            <p class="poema">
-                Este pequeño libro es para ti.<br>
-                Para recordarte lo especial que eres<br>
-                y lo mucho que significas para mí.
-            </p>
+            <p class="poema">Este pequeño libro es para ti.<br>Para recordarte lo especial que eres<br>y lo mucho que significas para mí.</p>
             <div class="frase-apoyo">"Toca la página para comenzar..."</div>
             <div class="click-hint">(Toca aquí)</div>
         </div>
-
         <div class="paper" id="p2" onclick="flip(2)">
             <div class="decoracion">✨</div>
             <h2>Tu Luz</h2>
-            <p class="poema">
-                A veces el día se pone gris,<br>
-                y las dudas nublan tu mirar,<br>
-                pero tu luz es más fuerte,<br>
-                nunca dejes de brillar.
-            </p>
+            <p class="poema">A veces el día se pone gris,<br>y las dudas nublan tu mirar,<br>pero tu luz es más fuerte,<br>nunca dejes de brillar.</p>
             <div class="frase-apoyo">"Aunque todo parezca oscuro, yo encenderé una luz para ti."</div>
         </div>
-
         <div class="paper" id="p3" onclick="flip(3)">
             <div class="decoracion">❤️</div>
             <h2>Valentía</h2>
-            <p class="poema">
-                Admiro cómo enfrentas la vida,<br>
-                con esa fuerza en el corazón.<br>
-                Eres más valiente de lo que crees,<br>
-                y mi mayor inspiración.
-            </p>
+            <p class="poema">Admiro cómo enfrentas la vida,<br>con esa fuerza en el corazón.<br>Eres más valiente de lo que crees,<br>y mi mayor inspiración.</p>
             <div class="frase-apoyo">"Si sientes que caes, mi mano estará ahí antes de que toques el suelo."</div>
         </div>
-
         <div class="paper" id="p4" onclick="flip(4)">
             <div class="decoracion">☔</div>
             <h2>Calma</h2>
-            <p class="poema">
-                Es válido no estar bien siempre,<br>
-                es válido querer llorar.<br>
-                Yo seré tu paraguas,<br>
-                hasta que la tormenta logre pasar.
-            </p>
+            <p class="poema">Es válido no estar bien siempre,<br>es válido querer llorar.<br>Yo seré tu paraguas,<br>hasta que la tormenta logre pasar.</p>
             <div class="frase-apoyo">"Cuando el ruido del mundo te agobie, ven a mí, yo seré tu silencio y tu paz."</div>
         </div>
-
         <div class="paper" id="p5" onclick="flip(5)">
             <div class="decoracion">🧸</div>
             <h2>Refugio</h2>
-            <p class="poema">
-                No tienes que cargar todo sola,<br>
-                el mundo a veces pesa de más.<br>
-                Deja un poco de ese peso en mis hombros,<br>
-                para que puedas descansar.
-            </p>
+            <p class="poema">No tienes que cargar todo sola,<br>el mundo a veces pesa de más.<br>Deja un poco de ese peso en mis hombros,<br>para que puedas descansar.</p>
             <div class="frase-apoyo">"Aunque sientas que todo se derrumba, yo seré tu pilar firme."</div>
         </div>
-
         <div class="paper" id="p6" onclick="flip(6)">
             <div class="decoracion">🌸</div>
             <h2>Tu Risa</h2>
-            <p class="poema">
-                Extraño ver tu sonrisa,<br>
-                esa que ilumina el lugar.<br>
-                Pero esperaré pacientemente,<br>
-                hasta que la quieras mostrar.
-            </p>
+            <p class="poema">Extraño ver tu sonrisa,<br>esa que ilumina el lugar.<br>Pero esperaré pacientemente,<br>hasta que la quieras mostrar.</p>
             <div class="frase-apoyo">"No importa cuán difícil sea el día, recuerda que no lo enfrentas sola."</div>
         </div>
-
         <div class="paper" id="p7" onclick="flip(7)">
             <div class="decoracion">🦋</div>
             <h2>Proceso</h2>
-            <p class="poema">
-                Como la mariposa espera,<br>
-                los cambios llevan su tiempo.<br>
-                Confía en tu propio proceso,<br>
-                yo confío en tu talento.
-            </p>
+            <p class="poema">Como la mariposa espera,<br>los cambios llevan su tiempo.<br>Confía en tu propio proceso,<br>yo confío en tu talento.</p>
             <div class="frase-apoyo">"Si el camino se pone difícil, caminaremos más despacio, pero juntos."</div>
         </div>
-
         <div class="paper" id="p8" onclick="flip(8)">
             <div class="decoracion">🎨</div>
             <h2>Colores</h2>
-            <p class="poema">
-                Tú pintas mi vida de colores,<br>
-                incluso sin intentar.<br>
-                Eres arte en mis ojos,<br>
-                imposible de no admirar.
-            </p>
+            <p class="poema">Tú pintas mi vida de colores,<br>incluso sin intentar.<br>Eres arte en mis ojos,<br>imposible de no admirar.</p>
             <div class="frase-apoyo">"Aunque sientas que pierdes el rumbo, yo seré tu brújula."</div>
         </div>
-
         <div class="paper" id="p9" onclick="flip(9)">
             <div class="decoracion">🌙</div>
             <h2>Noche y Día</h2>
-            <p class="poema">
-                Que la luna te cuide el sueño,<br>
-                y el sol te de calor.<br>
-                Yo te daré mi cariño,<br>
-                y mi incondicional amor.
-            </p>
+            <p class="poema">Que la luna te cuide el sueño,<br>y el sol te de calor.<br>Yo te daré mi cariño,<br>y mi incondicional amor.</p>
             <div class="frase-apoyo">"Cuando creas que no puedes más, mírame: estoy aquí, creyendo en ti por los dos."</div>
         </div>
-
         <div class="paper" id="p10" onclick="closeBook()">
             <div class="decoracion">💜</div>
             <h2>Siempre Contigo</h2>
-            <p class="poema">
-                Llegamos al final del libro,<br>
-                pero no de esta historia.<br>
-                Te amo infinitamente,<br>
-                hoy, mañana y ahora.
-            </p>
+            <p class="poema">Llegamos al final del libro,<br>pero no de esta historia.<br>Te amo infinitamente,<br>hoy, mañana y ahora.</p>
             <div class="frase-apoyo">"Todo va a estar bien. Te amo."</div>
             <div class="click-hint" style="margin-top: 20px;">(Toca para cerrar el libro)</div>
         </div>
-
     </div>
 
     <script>
+        // --- LÓGICA DEL LIBRO ---
         let currentPage = 1;
         const totalPages = 10;
 
         function flip(pageNumber) {
-            // Solo permite voltear si es la página actual
             if (pageNumber === currentPage) {
                 const pageElement = document.getElementById('p' + pageNumber);
                 pageElement.classList.add('flipped');
-                
-                // Cambiamos el z-index después de la animación para que quede debajo
-                // pero mantenemos el orden visual
                 currentPage++;
             }
         }
 
         function closeBook() {
-            // Reiniciar el libro cerrando todas las páginas
             for (let i = 1; i <= totalPages; i++) {
                 const pageElement = document.getElementById('p' + i);
                 pageElement.classList.remove('flipped');
             }
             currentPage = 1;
+        }
+
+        // --- LÓGICA DE YOUTUBE ---
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        var player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '100%',
+                width: '100%',
+                // AQUI ESTÁ TU ID INTEGRADO:
+                videoId: 'ML2H48uMpOI', 
+                playerVars: {
+                    'autoplay': 0,
+                    'controls': 0,
+                    'rel': 0,
+                    'loop': 1
+                },
+                events: {
+                    'onReady': onPlayerReady
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            // El video está listo
+        }
+
+        function startExperience() {
+            document.getElementById('overlay').classList.add('hidden');
+            document.getElementById('book').classList.add('visible');
+            if(player && player.playVideo) {
+                player.unMute();
+                player.setVolume(100);
+                player.playVideo();
+            }
         }
     </script>
 </body>
